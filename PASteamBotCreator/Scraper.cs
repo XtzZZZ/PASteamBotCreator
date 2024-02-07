@@ -47,6 +47,6 @@ public class Scraper
         {
             byte[] buffer = Encoding.Default.GetBytes(driver.PageSource);
             fs.Write(buffer);
-        }
+        } //
     }
 }
