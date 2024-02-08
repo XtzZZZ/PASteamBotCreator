@@ -1,15 +1,11 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.DevTools.V85.Profiler;
-using System;  
-using System.IO;  
-using System.Text; 
 
 namespace PASteamBotCreator;
 
 public class Scraper
 {
-    private IWebDriver driver;
+    private readonly IWebDriver driver;
     private readonly string url;
     public Scraper()
     {
@@ -34,21 +30,23 @@ public class Scraper
             driver.Quit();
         }
     }
-    // /html/body/div[1]/div[7]/div[6]/div/div[1]/div[2]/form/div/div/div[4]/div[1]/div/select/option[14]
+
+    private void recaptcha_solver()
+    {
+        var elem = driver.FindElement(By.CssSelector("#g-recaptcha-response"));
+        var js = (IJavaScriptExecutor)driver;
+        js.ExecuteScript("arguments[0].style.removeProperty('display')", elem);
+    }
+    
     private void FirstPage()
     {
-        driver.Navigate().GoToUrl(url: url);
+        driver.Navigate().GoToUrl(url: url); // open steam login page
         Thread.Sleep(5000);
-        driver.FindElement(By.CssSelector("#email")).SendKeys("otobasgumats@gmail.com");
-        driver.FindElement(By.CssSelector("#reenter_email")).SendKeys("otobasgumats@gmail.com");
-        IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-        js.ExecuteScript("document.getElementById('g-recaptcha-response').removeAttribute('disabled')");
-        Console.WriteLine("Done");
-        Thread.Sleep(500000);
-        driver.FindElement(By.CssSelector("#country")).Click();
+        driver.FindElement(By.CssSelector("#email")).SendKeys("otobasgumats@gmail.com"); // input email
+        driver.FindElement(By.CssSelector("#reenter_email")).SendKeys("otobasgumats@gmail.com"); // confirm email
+        recaptcha_solver(); // solve recaptcha challenge
+        Thread.Sleep(5000); 
+        driver.FindElement(By.XPath("//*[@id=\"country\"]/option[8]")).Click(); // choose country (Australia) from the list
         Thread.Sleep(5000);
-        driver.FindElement(By.XPath("//*[@id=\"country\"]/option[8]")).Click();
-        Thread.Sleep(5000);
-        
     }
 }
