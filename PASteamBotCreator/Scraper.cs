@@ -36,8 +36,25 @@ public class Scraper
         var elem = driver.FindElement(By.CssSelector("#g-recaptcha-response")); // find the recaptcha key input element
         var js = (IJavaScriptExecutor)driver;
         js.ExecuteScript("arguments[0].style.removeProperty('display')", elem); // make the recaptcha key input window visible
+        string RecaptchaToken = "", RecaptchaUrl = driver.FindElement(By.XPath("//*[@id=\"captcha_entry_recaptcha\"]/div/div/div/iframe")).GetAttribute("src");
+        for (int i = 1; i < RecaptchaUrl.Length - 2; ++i)
+        {
+            if (RecaptchaUrl[(i - 1)..(i + 1)] == "k=")
+            {
+                int index = i + 1;
+                for (int j = index; i < RecaptchaUrl.Length - 2; ++j)
+                {
+                    if (RecaptchaUrl[j] == '&')
+                    {
+                        RecaptchaToken = RecaptchaUrl[index..j];
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        Console.Write(RecaptchaToken);
     }
-    
     private void FirstPage()
     {
         driver.Navigate().GoToUrl(url: url); // open steam login page
