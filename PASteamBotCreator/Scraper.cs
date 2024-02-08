@@ -33,9 +33,9 @@ public class Scraper
 
     private void recaptcha_solver()
     {
-        var elem = driver.FindElement(By.CssSelector("#g-recaptcha-response"));
+        var elem = driver.FindElement(By.CssSelector("#g-recaptcha-response")); // find the recaptcha key input element
         var js = (IJavaScriptExecutor)driver;
-        js.ExecuteScript("arguments[0].style.removeProperty('display')", elem);
+        js.ExecuteScript("arguments[0].style.removeProperty('display')", elem); // make the recaptcha key input window visible
     }
     
     private void FirstPage()
